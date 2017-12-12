@@ -39,11 +39,24 @@ public class Reseau {
 			usager.avancer();
 		}
 	}
-	
-	public void RunSemphores(int currentTurn,int inter) {
-		for(Segment s : routes) {
-			if(s.)
+
+	public void RunSemphores(int currentTurn) {
+		int decale = 3;
+		for (Segment s : routes) {
+			if (s.containsSemaphore()) {
+				if (((Ligne) s).getSdebut() != null) {
+					((Ligne) s).getSdebut().switchCurrent(currentTurn, decale);
+				} else {
+					((Ligne) s).getSfin().switchCurrent(currentTurn, decale);
+				}
+				decale++;
+			}
+
 		}
+	}
+	
+	public void DoSomething(Segment s) {
+		
 	}
 
 	public static void main(String[] args) {
