@@ -52,7 +52,7 @@ public class Voiture {
 
 	@Override
 	public String toString() {
-		return "voiture " + id + " : " + (sens ? "aller" : "retour")+ position + "/" + segAct.getLong() + " sur " + segAct;
+		return "voiture " + id + " : " + (sens ? "aller " : "retour ")+ position + "/" + segAct.getLong() + " sur " + segAct;
 	}
 
 }

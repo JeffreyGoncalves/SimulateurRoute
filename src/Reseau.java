@@ -78,7 +78,7 @@ public class Reseau {
 
 		// On deplace toutes les voitures, ici il n'y en a qu'une
 		int nbTours = 0;
-		while (nbTours < 12) {
+		while (nbTours < 40) {
 			reseau.faireAvancer();
 			/*
 			 * try { Thread.sleep(500); } catch (InterruptedException e) {
@@ -88,7 +88,7 @@ public class Reseau {
 		}
 
 		// Juste pour tester la methode "sortiePour"
-		while (nbTours < 120) {
+		while (nbTours < 60) {
 			System.out.println(lieu2.sortiePour(voit1));
 			++nbTours;
 		}
