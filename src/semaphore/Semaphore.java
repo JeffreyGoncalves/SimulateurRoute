@@ -1,10 +1,14 @@
+package semaphore;
+import route.Ligne;
+import status.Action;
 
 public abstract class Semaphore {
 
 	private Ligne itsRoad;
 	private int position;
+	private boolean sens;
 	
-	public Semaphore(Ligne toBeAdded) {
+	public Semaphore(Ligne toBeAdded,boolean b) {
 		if(toBeAdded!=null) {
 			itsRoad = toBeAdded;
 			
@@ -32,5 +36,13 @@ public abstract class Semaphore {
 		else {
 			System.out.println("Erreur de position\n");
 		}
+	}
+
+	public boolean isSens() {
+		return sens;
+	}
+	
+	public void setSens(boolean b) {
+		this.sens = b;
 	}
 }

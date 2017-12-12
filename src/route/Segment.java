@@ -1,3 +1,6 @@
+package route;
+import voiture.Voiture;
+
 public abstract class Segment {
 	
 	private static Reseau reseau = new Reseau();

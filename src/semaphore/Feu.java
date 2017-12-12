@@ -1,11 +1,16 @@
+package semaphore;
+import jonction.Barriere;
+import route.Ligne;
+import status.Action;
+import status.CouleurFeu;
 
 public class Feu extends Semaphore {
 
 	protected CouleurFeu current;
 	
 	
-	public Feu(Ligne toBeAdded) {
-		super(toBeAdded);
+	public Feu(Ligne toBeAdded,boolean b) {
+		super(toBeAdded,b);
 		this.current = CouleurFeu.Vert;
 	}
 	
@@ -32,7 +37,7 @@ public class Feu extends Semaphore {
 		
 		int i=1;
 		Ligne route = new Ligne(new Barriere(),new Barriere(), 10);
-		Feu sabrule = new Feu(route);
+		Feu sabrule = new Feu(route,true);
 		
 		while(i < 20) {
 			
@@ -51,4 +56,5 @@ public class Feu extends Semaphore {
 		}
 		else {return Action.Stop;}
 	}
+	
 }

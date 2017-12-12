@@ -1,5 +1,10 @@
+package jonction;
 import java.util.ArrayList;
 import java.util.Random;
+
+import route.Ligne;
+import route.Segment;
+import voiture.Voiture;
 
 public abstract class Jonction extends Segment {
 

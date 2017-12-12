@@ -1,3 +1,8 @@
+package voiture;
+import route.Segment;
+import semaphore.Limitation;
+import semaphore.Semaphore;
+import status.Action;
 
 public class Voiture {
 
@@ -38,6 +43,18 @@ public class Voiture {
 
 	}
 
+	public void reactSignal(Semaphore s) {
+		if (this.sens == s.isSens() && s.getItsRoad() == this.segAct) {
+			if (s.GiveInfo() == Action.Stop) {
+				if (this.position == s.getPosition()) {
+					this.vitesseAct = 0;
+				} else if ((s.GiveInfo() == Action.SlowDown) || (this.vitesseAct > ((Limitation) s).getVitesseMax())) {
+					this.vitesseAct--;
+				}
+			}
+		}
+	}
+
 	public boolean getSens() {
 		return sens;
 	}
@@ -52,7 +69,8 @@ public class Voiture {
 
 	@Override
 	public String toString() {
-		return "voiture " + id + " : " + (sens ? "aller " : "retour ")+ position + "/" + segAct.getLong() + " sur " + segAct;
+		return "voiture " + id + " : " + (sens ? "aller " : "retour ") + position + "/" + segAct.getLong() + " sur "
+				+ segAct;
 	}
 
 }

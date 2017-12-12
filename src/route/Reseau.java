@@ -1,4 +1,10 @@
+package route;
 import java.util.ArrayList;
+
+import jonction.Barriere;
+import jonction.Carrefour;
+import jonction.Jonction;
+import voiture.Voiture;
 
 public class Reseau {
 
@@ -55,9 +61,6 @@ public class Reseau {
 		}
 	}
 	
-	public void DoSomething(Segment s) {
-		
-	}
 
 	public static void main(String[] args) {
 

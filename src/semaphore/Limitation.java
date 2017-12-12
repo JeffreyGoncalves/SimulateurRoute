@@ -1,10 +1,13 @@
+package semaphore;
+import route.Ligne;
+import status.Action;
 
 public class Limitation extends Semaphore {
 	
 	private int vitesseMax;
 	
-	public Limitation(Ligne toBeAdded,int vmax) {
-		super(toBeAdded);
+	public Limitation(Ligne toBeAdded,int vmax,boolean b) {
+		super(toBeAdded,b);
 		vitesseMax = vmax;
 	}
 	

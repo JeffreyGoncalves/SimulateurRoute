@@ -1,3 +1,7 @@
+package route;
+import jonction.Jonction;
+import semaphore.Semaphore;
+import voiture.Voiture;
 
 public class Ligne extends Segment {
 	private int longueur;
@@ -80,6 +84,7 @@ public class Ligne extends Segment {
 
 	public void setSfin(Semaphore sfin) {
 		this.sfin = sfin;
+		this.sfin.setSens(true);
 	}
 
 	public Semaphore getSdebut() {
@@ -88,6 +93,7 @@ public class Ligne extends Segment {
 
 	public void setSdebut(Semaphore sdebut) {
 		this.sdebut = sdebut;
+		this.sdebut.setSens(false);
 	}
 
 	@Override

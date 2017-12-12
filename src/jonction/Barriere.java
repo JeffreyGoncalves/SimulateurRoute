@@ -1,4 +1,7 @@
-
+package jonction;
+import route.Ligne;
+import route.Segment;
+import voiture.Voiture;
 
 public class Barriere extends Jonction {
 	

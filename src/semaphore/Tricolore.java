@@ -1,10 +1,15 @@
+package semaphore;
+import jonction.Barriere;
+import route.Ligne;
+import status.Action;
+import status.CouleurFeu;
 
 public class Tricolore extends Feu {
 
 	private int decalage;
 
-	public Tricolore(Ligne toBeAdded, int dec) {
-		super(toBeAdded);
+	public Tricolore(Ligne toBeAdded, int dec,boolean b) {
+		super(toBeAdded, b);
 		decalage = dec;
 	}
 
@@ -53,7 +58,7 @@ public class Tricolore extends Feu {
 
 		int i = 0;
 		Ligne route = new Ligne(new Barriere(), new Barriere(), 10);
-		Tricolore sabrule = new Tricolore(route, 1);
+		Tricolore sabrule = new Tricolore(route, 1,true);
 
 		while (i < 20) {
 

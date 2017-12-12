@@ -1,4 +1,5 @@
-
+package jonction;
+import route.Ligne;
 
 public class Carrefour extends Jonction {
 

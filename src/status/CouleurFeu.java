@@ -1,3 +1,4 @@
+package status;
 //NEW
 public enum CouleurFeu {
 
