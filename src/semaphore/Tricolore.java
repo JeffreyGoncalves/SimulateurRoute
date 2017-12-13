@@ -7,10 +7,11 @@ import status.CouleurFeu;
 public class Tricolore extends Feu {
 
 	private int decalage;
+	private int tOrange;
 
-	public Tricolore(Ligne toBeAdded, int dec,boolean b) {
-		super(toBeAdded, b);
-		decalage = dec;
+	public Tricolore(Ligne toBeAdded, int dec, boolean b, int periode, int tVert, int tOrange, int tRouge) {
+		super(toBeAdded, b, periode, tVert, tRouge);
+		this.tOrange = tOrange;
 	}
 
 	@Override
@@ -25,19 +26,16 @@ public class Tricolore extends Feu {
 		return this.current;
 	}
 
-	public void switchCurrent(int currentTurn, int inter) {
-		if ((currentTurn % inter) == 0) {
-			if (this.current == CouleurFeu.Vert) {
-				this.current = CouleurFeu.Orange;
-			} else if (this.current == CouleurFeu.Rouge) {
-				this.current = CouleurFeu.Vert;
-			}
-		} else if ((currentTurn % inter) == this.decalage) {
-			if (this.current == CouleurFeu.Orange) {
-				this.current = CouleurFeu.Rouge;
-			}
-		}
-
+	@Override
+	public void switchCurrent(int currentTurn) {
+		int t = currentTurn % periode;
+		//System.out.println("t = " + t);
+		if (t == tVert)
+			current = CouleurFeu.Vert;
+		else if (t == tRouge)
+			current = CouleurFeu.Rouge;
+		else if (t == tOrange)
+			current = CouleurFeu.Orange;
 	}
 
 	@Override
@@ -58,11 +56,11 @@ public class Tricolore extends Feu {
 
 		int i = 0;
 		Ligne route = new Ligne(new Barriere(), new Barriere(), 10);
-		Tricolore sabrule = new Tricolore(route, 1,true);
+		Tricolore sabrule = new Tricolore(route, 1,true, 8, 0, 3, 4);
 
 		while (i < 20) {
 
-			sabrule.switchCurrent(i, 4);
+			sabrule.switchCurrent(i);
 			System.out.println(sabrule.toString());
 			i++;
 		}

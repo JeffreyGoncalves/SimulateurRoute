@@ -4,5 +4,6 @@ public enum Action {
 
 	Stop,
 	SlowDown,
-	LetItGo;
+	LetItGo,
+	MaxSpeed;
 }

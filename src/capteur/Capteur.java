@@ -1,5 +1,5 @@
 package capteur;
 
 public class Capteur {
-	int position;
+	protected int position;
 }

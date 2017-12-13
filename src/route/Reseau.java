@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import jonction.Barriere;
 import jonction.Carrefour;
 import jonction.Jonction;
+import semaphore.Feu;
 import voiture.Voiture;
 
 public class Reseau {
@@ -46,16 +47,16 @@ public class Reseau {
 		}
 	}
 
-	public void RunSemphores(int currentTurn) {
-		int decale = 3;
+	public void RunSemaphores(int currentTurn) {
 		for (Segment s : routes) {
 			if (s.containsSemaphore()) {
 				if (((Ligne) s).getSdebut() != null) {
-					((Ligne) s).getSdebut().switchCurrent(currentTurn, decale);
+					((Ligne) s).getSdebut().switchCurrent(currentTurn);
+					System.out.println(((Ligne) s).getSdebut());
 				} else {
-					((Ligne) s).getSfin().switchCurrent(currentTurn, decale);
+					((Ligne) s).getSfin().switchCurrent(currentTurn);
+					System.out.println(((Ligne) s).getSfin());
 				}
-				decale++;
 			}
 
 		}
@@ -76,12 +77,15 @@ public class Reseau {
 		// voiture demarrant au PUIO se deplacant a une vitesse de 3
 		Voiture voit1 = new Voiture(0, 1, 5, true, lieu1);
 		reseau.ajouterVoiture(voit1);
+		
+		Feu sabrule = new Feu((Ligne)reseau.routes.get(3), true, 20, 0, 4);
 
 		reseau.finirConstruction();
 
 		// On deplace toutes les voitures, ici il n'y en a qu'une
 		int nbTours = 0;
 		while (nbTours < 40) {
+			reseau.RunSemaphores(nbTours);
 			reseau.faireAvancer();
 			/*
 			 * try { Thread.sleep(500); } catch (InterruptedException e) {

@@ -21,7 +21,7 @@ public class Limitation extends Semaphore {
 	}
 	
 	@Override
-	public void switchCurrent(int currentTurn, int inter){
+	public void switchCurrent(int currentTurn){
 		
 	}
 }
