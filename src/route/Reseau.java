@@ -1,6 +1,10 @@
 package route;
 import java.util.ArrayList;
 
+import exception.JonctionException;
+import exception.SegmentException;
+import exception.SemaphoreException;
+import exception.VoitureException;
 import jonction.Barriere;
 import jonction.Carrefour;
 import jonction.Jonction;
@@ -18,11 +22,11 @@ public class Reseau {
 
 	}
 
-	public void relier(Jonction lieu1, Jonction lieu2, int distance) {
+	public void relier(Jonction lieu1, Jonction lieu2, int distance) throws SegmentException, JonctionException {
 		new Ligne(lieu1, lieu2, distance);
 	}
 
-	public void finirConstruction() {
+	public void finirConstruction() throws SegmentException, JonctionException {
 
 		for (int i = 0; i < routes.size(); ++i) {
 			routes.get(i).finirConstruction();
@@ -39,7 +43,7 @@ public class Reseau {
 		usagers.add(voiture);
 	}
 
-	public void faireAvancer() {
+	public void faireAvancer() throws VoitureException, SegmentException, SemaphoreException {
 		System.out.println("- Nouveau tour -");
 		for (Voiture usager : usagers) {
 			System.out.println(usager.toString());
@@ -63,7 +67,7 @@ public class Reseau {
 	}
 	
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SegmentException, JonctionException, VoitureException, SemaphoreException {
 
 		Reseau reseau = Segment.getReseau();
 
