@@ -22,6 +22,7 @@ public class Barriere extends Jonction {
 			throw new VoitureException("Voiture non definie dans SortiePour");
 		else
 			return lignes[0]; // segments est toujours de longueur 1 pour une barriere
+
 	}
 
 	

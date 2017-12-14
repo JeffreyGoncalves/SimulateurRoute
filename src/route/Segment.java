@@ -1,7 +1,9 @@
 package route;
+
 import java.util.ArrayList;
 
 import capteur.Capteur;
+import exception.JonctionException;
 import exception.SegmentException;
 import exception.VoitureException;
 import voiture.Voiture;
@@ -50,6 +52,6 @@ public abstract class Segment {
 	
 	public abstract boolean containsSemaphore();
 	
-	public abstract void finirConstruction();
+	public abstract void finirConstruction() throws SegmentException, JonctionException;
 	
 }

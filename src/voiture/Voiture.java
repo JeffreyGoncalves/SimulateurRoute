@@ -15,7 +15,7 @@ public class Voiture {
 	private int position;
 	private int vitesseAct;
 	private int vitesseMax; // vitesse physiquement atteignable par la voiture
-	private int vitesseAutorisee; // vitesse maximale selon les panneaux de  limitation de vitesse
+	private int vitesseAutorisee; // vitesse maximale selon les panneaux de limitation de vitesse
 	private int distRestante;
 	private boolean sens;
 	private Segment segAct;
@@ -27,6 +27,10 @@ public class Voiture {
 		this.position = position;
 		this.vitesseMax = vitesseMax;
 		this.segAct = segAct;
+			this.vitesseAct = vitesseAct;
+			this.vitesseMax = vitesseMax;
+			this.segAct = segAct;
+		
 	}
 
 	public void avancer() throws SegmentException {
@@ -34,10 +38,10 @@ public class Voiture {
 		distRestante = vitesseAct = vitesseAutorisee = vitesseMax;
 		do {
 			if (segAct.containsSemaphore()) {
-				if (sens && ((Ligne)segAct).getSfin() != null)
-					reactSignal(((Ligne)segAct).getSfin());
-				else if (!sens && ((Ligne)segAct).getSdebut() != null)
-					reactSignal(((Ligne)segAct).getSdebut());
+				if (sens && ((Ligne) segAct).getSfin() != null)
+					reactSignal(((Ligne) segAct).getSfin());
+				else if (!sens && ((Ligne) segAct).getSdebut() != null)
+					reactSignal(((Ligne) segAct).getSdebut());
 			}
 			if (position + vitesseAct < segAct.getLong()) {
 				setPosition(position + distRestante);
@@ -45,11 +49,11 @@ public class Voiture {
 			} else {
 				if (peutSortir) {
 					distRestante -= segAct.getLong() - position;
-					try {
-						setSegment(segAct.sortiePour(this));
-					} catch (VoitureException e) {
-						// Impossible qu'il y ait une exception puisque this ne peut pas etre null
-					}
+						try {
+							setSegment(segAct.sortiePour(this));
+						} catch (VoitureException e) {
+							e.printStackTrace();
+						}
 				} else {
 					setPosition(segAct.getLong() - 1);
 					distRestante = 0;
@@ -96,9 +100,9 @@ public class Voiture {
 					vitesseAct = vitesseAutorisee = ((Limitation) s).getVitesseMax();
 				break;
 			}
+			if (vitesseAct < distRestante)
+				distRestante = vitesseAct;
 		}
-		if (vitesseAct < distRestante)
-			distRestante = vitesseAct;
 	}
 
 	public boolean getSens() {

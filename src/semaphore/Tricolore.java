@@ -1,4 +1,7 @@
 package semaphore;
+import exception.JonctionException;
+import exception.SegmentException;
+import exception.SemaphoreException;
 import jonction.Barriere;
 import route.Ligne;
 import status.Action;
@@ -8,7 +11,9 @@ public class Tricolore extends Feu {
 
 	private int tOrange;
 
-	public Tricolore(Ligne toBeAdded, boolean b, int periode, int tVert, int tOrange, int tRouge) {
+
+	public Tricolore(Ligne toBeAdded, boolean b, int periode, int tVert, int tOrange, int tRouge) throws SemaphoreException {
+
 		super(toBeAdded, b, periode, tVert, tRouge);
 		this.tOrange = tOrange;
 	}
@@ -43,7 +48,7 @@ public class Tricolore extends Feu {
 		}
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SegmentException, JonctionException, SemaphoreException {
 
 		int i = 0;
 		Ligne route = new Ligne(new Barriere(), new Barriere(), 10);

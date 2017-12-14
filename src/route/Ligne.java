@@ -1,5 +1,9 @@
 package route;
 
+
+import exception.JonctionException;
+import exception.SegmentException;
+import exception.VoitureException;
 import jonction.Jonction;
 import semaphore.Semaphore;
 import voiture.Voiture;
@@ -11,7 +15,7 @@ public class Ligne extends Segment {
 	private Semaphore sFin;
 	private Semaphore sDebut;
 
-	public Ligne( Jonction debut, Jonction fin, int longueur) {
+	public Ligne( Jonction debut, Jonction fin, int longueur) throws SegmentException {
 		super();
 		this.longueur = longueur;
 		this.debut = debut;
@@ -34,11 +38,15 @@ public class Ligne extends Segment {
 		return lequel ? debut : fin;
 	}
 
-	public void setBout(boolean lequel, Jonction bout) {
-		if (lequel)
-			debut = bout;
-		else
-			fin = bout;
+	public void setBout(boolean lequel, Jonction bout) throws JonctionException {
+		if (bout == null) {
+			throw new JonctionException("Jonction non definie dans setBout");
+		} else {
+			if (lequel)
+				debut = bout;
+			else
+				fin = bout;
+		}
 	}
 
 	public int getLong() {
@@ -46,8 +54,13 @@ public class Ligne extends Segment {
 	}
 
 	@Override
-	public Segment sortiePour(Voiture occupant) {
-		return occupant.getSens() ? fin : debut;
+	public Segment sortiePour(Voiture occupant) throws VoitureException {
+		if (occupant == null) {
+			throw new VoitureException("Cette voiture n'existe pas dans sortiePour !!\n");
+		} else {
+			return occupant.getSens() ? fin : debut;
+		}
+
 	}
 
 	@Override
@@ -56,8 +69,12 @@ public class Ligne extends Segment {
 	}
 
 	@Override
-	public boolean estDirigeVers(Segment segment) {
-		return (segment == fin);
+	public boolean estDirigeVers(Segment segment) throws SegmentException {
+		if (segment == null) {
+			throw new SegmentException("Segment non defini dans estDirigevers !!\n");
+		} else {
+			return (segment == fin);
+		}
 	}
 
 	@Override

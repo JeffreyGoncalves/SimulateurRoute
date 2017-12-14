@@ -1,5 +1,4 @@
 package regulation;
-
 import java.util.ArrayList;
 
 import capteur.Capteur;
