@@ -4,6 +4,7 @@ import exception.JonctionException;
 import exception.SegmentException;
 import exception.SemaphoreException;
 import jonction.Barriere;
+import regulation.ElementRegulation;
 import route.Ligne;
 import status.Action;
 import status.CouleurFeu;
@@ -14,6 +15,7 @@ public class Feu extends Semaphore {
 	protected int tVert;
 	protected int tRouge;
 	protected int periode;
+	protected ElementRegulation chef = null;
 
 	public Feu(Ligne toBeAdded, boolean b, int periode, int tVert, int tRouge) throws SemaphoreException {
 		super(toBeAdded, b);

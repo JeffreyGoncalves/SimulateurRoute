@@ -2,12 +2,14 @@ package capteur;
 
 import java.util.ArrayList;
 
+import regulation.ElementRegulation;
 import route.Segment;
 import voiture.Voiture;
 
 public class Capteur {
 	protected Segment itsRoad;
 	protected int position;
+	protected ElementRegulation regulateur;
 
 	protected ArrayList<Voiture> detectees = new ArrayList<Voiture>();
 
@@ -18,6 +20,8 @@ public class Capteur {
 	}
 
 	public void transmettreInfo() {
+		if (regulateur != null)
+			;
 		// donner l'info
 		detectees.clear();
 	}
@@ -27,6 +31,8 @@ public class Capteur {
 			detectees.add(voiture);
 			System.out.println("voiture detectee en " + position + "/" + itsRoad.getLong() + " de " + itsRoad);
 		}
+		if (detectees.size() > 1)
+			System.out.println("/!\\ Risque de collision en " + position + "/" + itsRoad.getLong() + " de " + itsRoad);
 	}
 	
 }
