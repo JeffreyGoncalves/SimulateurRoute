@@ -31,7 +31,7 @@ public class Feu extends Semaphore {
 
 	@Override
 	public String toString() {
-		return "Le Feu est au " + this.current;
+		return "Feu " + this.current + " en " + (sens ? "fin" : "debut") + " de " + itsRoad;
 	}
 
 	public CouleurFeu getCurrent() {

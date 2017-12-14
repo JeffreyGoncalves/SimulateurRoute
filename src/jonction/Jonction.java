@@ -1,6 +1,5 @@
 package jonction;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 import exception.JonctionException;
@@ -24,21 +23,12 @@ public abstract class Jonction extends Segment {
 	}
 
 	public Jonction(String nom) {
+
+		super();
 		this.nom = nom;
-	}
-
-	public Jonction(ArrayList<Ligne> lnTemp, String nom) throws SegmentException {
-
-		if (lnTemp.isEmpty()) {
-			throw new SegmentException("Liste de lignes vide !! \n");
-		} else {
-			lignes = new Ligne[lnTemp.size()];
-			for (int i = 0; i < lnTemp.size(); ++i)
-				lignes[i] = lnTemp.get(i);
-			this.nom = nom;
-		}
 
 	}
+
 
 	public void ajouterLigne(Ligne ligne) throws SegmentException {
 		if (ligne == null) {
@@ -73,9 +63,7 @@ public abstract class Jonction extends Segment {
 
 	@Override
 	public Segment sortiePour(Voiture occupant) throws VoitureException {
-		if (occupant == null) {
-			throw new VoitureException("Cette voiture n'existe pas dans sortiePour !!\n");
-		} else {
+
 			if (occupant.getSegPrec() == null)
 				return lignes[rand.nextInt(lignes.length)];
 
@@ -84,15 +72,11 @@ public abstract class Jonction extends Segment {
 				++temp;
 			return lignes[temp];
 		}
-	}
 
 	@Override
 	public boolean estDirigeVers(Segment segment) throws SegmentException {
-		if (segment == null) {
-			throw new SegmentException("Segment inexistant dans estDirigeeVers");
-		} else {
-			return !segment.estDirigeVers(this);
-		}
+
+		return !segment.estDirigeVers(this);
 
 	}
 
@@ -103,13 +87,13 @@ public abstract class Jonction extends Segment {
 
 	@Override
 	public void setSegmentArrivee(Segment segment) throws SegmentException {
-		if (segment == null) {
-			throw new SegmentException("Segment inexistant dans setSegmentArrivee !! \n");
-		} else {
-			for (int i = 0; i < lignes.length; ++i)
-				if (segment == lignes[i])
-					numArrivee = i;
-		}
+
+		if (segment == null)
+			throw new SegmentException("On tente de mettre un segment null en bout de Jonction");
+		for(int i=0; i<lignes.length; ++i)
+			if (segment == lignes[i])
+				numArrivee = i;
+
 	}
 
 	@Override
@@ -121,5 +105,22 @@ public abstract class Jonction extends Segment {
 	public boolean containsSemaphore() {
 		return false;
 	}
+
+
+	@Override
+	public void activerCapteurs(Voiture voiture, int pos1, int pos2) {
+		// Rien a faire ici car une voiture ne peut pas se deplacer a l'interieur d'un segment
+		
+	}
+
+	@Override
+	public void activerCapteurs(Voiture voiture) {
+		if (posCapteurs == null)
+			return;
+		for (int i = 0; i < posCapteurs.size(); ++i) {
+			capteurs.get(i).detecter(voiture);
+		}
+	}
+
 
 }

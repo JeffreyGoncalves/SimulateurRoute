@@ -5,8 +5,8 @@ import status.Action;
 
 public abstract class Semaphore {
 
-	private Ligne itsRoad;
-	private boolean sens;
+	protected Ligne itsRoad;
+	protected boolean sens;
 
 	public Semaphore(Ligne toBeAdded, boolean b) {
 		if (toBeAdded != null) {

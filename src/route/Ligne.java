@@ -1,5 +1,6 @@
 package route;
 
+
 import exception.JonctionException;
 import exception.SegmentException;
 import exception.VoitureException;
@@ -11,23 +12,18 @@ public class Ligne extends Segment {
 	private int longueur;
 	private Jonction debut;
 	private Jonction fin;
-	private Semaphore sfin;
-	private Semaphore sdebut;
+	private Semaphore sFin;
+	private Semaphore sDebut;
 
-	public Ligne(Jonction debut, Jonction fin, int longueur) throws SegmentException, JonctionException {
+	public Ligne( Jonction debut, Jonction fin, int longueur) throws SegmentException {
 		super();
-		if (debut == null || fin == null) {
-			throw new JonctionException("Jonction non definie !!\n");
-		} else {
-			this.longueur = longueur;
-			this.debut = debut;
-			this.fin = fin;
-			debut.ajouterLigne(this);
-			fin.ajouterLigne(this);
-			this.sfin = null;
-			this.sdebut = null;
-		}
-
+		this.longueur = longueur;
+		this.debut = debut;
+		this.fin = fin;
+		debut.ajouterLigne(this);
+		fin.ajouterLigne(this);
+		this.sFin = null;
+		this.sDebut = null;
 	}
 
 	public Jonction getDebut() {
@@ -101,29 +97,50 @@ public class Ligne extends Segment {
 	}
 
 	public Semaphore getSfin() {
-		return sfin;
+		return sFin;
 	}
 
 	public void setSfin(Semaphore sfin) {
-		this.sfin = sfin;
-		this.sfin.setSens(true);
+		this.sFin = sfin;
+		this.sFin.setSens(true);
 	}
 
 	public Semaphore getSdebut() {
-		return sdebut;
+		return sDebut;
 	}
 
 	public void setSdebut(Semaphore sdebut) {
-		this.sdebut = sdebut;
-		this.sdebut.setSens(false);
+		this.sDebut = sdebut;
+		this.sDebut.setSens(false);
+	}
+
+	@Override
+	public void activerCapteurs(Voiture voiture, int pos1, int pos2) {
+		if (posCapteurs == null)
+			return;
+		int pos1Retour = longueur - 1 - pos1;
+		int pos2Retour = longueur - 1 - pos2;
+		for (int i = 0; i < posCapteurs.size(); ++i) {
+			if ((voiture.getSens() && posCapteurs.get(i) >= pos1 && posCapteurs.get(i) <= pos2)
+					|| (!voiture.getSens() && posCapteurs.get(i) >= pos2Retour && posCapteurs.get(i) <= pos1Retour))
+				capteurs.get(i).detecter(voiture);
+		}
+	}
+
+	@Override
+	public void activerCapteurs(Voiture voiture) {
+		if (posCapteurs == null)
+			return;
+		for (int i = 0; i < posCapteurs.size(); ++i) {
+			if ((voiture.getSens() && posCapteurs.get(i) == 0)
+					|| (!voiture.getSens() && posCapteurs.get(i) == longueur - 1))
+				capteurs.get(i).detecter(voiture);
+		}
 	}
 
 	@Override
 	public boolean containsSemaphore() {
-		if (this.sdebut != null || this.sfin != null) {
-			return true;
-		} else {
-			return false;
-		}
+		return (sDebut != null || sFin != null);
 	}
+
 }
