@@ -2,6 +2,8 @@ package jonction;
 import java.util.ArrayList;
 import java.util.Random;
 
+import exception.SegmentException;
+import exception.VoitureException;
 import route.Ligne;
 import route.Segment;
 import voiture.Voiture;
@@ -20,13 +22,7 @@ public abstract class Jonction extends Segment {
 	}
 
 	public Jonction(String nom) {
-		this.nom = nom;
-	}
-
-	public Jonction(ArrayList<Ligne> lnTemp, String nom) {
-		lignes = new Ligne[lnTemp.size()];
-		for (int i = 0; i < lnTemp.size(); ++i)
-			lignes[i] = lnTemp.get(i);
+		super();
 		this.nom = nom;
 	}
 
@@ -56,7 +52,7 @@ public abstract class Jonction extends Segment {
 	}
 
 	@Override
-	public Segment sortiePour(Voiture occupant) {
+	public Segment sortiePour(Voiture occupant) throws VoitureException {
 
 		if (occupant.getSegPrec() == null)
 			return lignes[rand.nextInt(lignes.length)];
@@ -68,7 +64,7 @@ public abstract class Jonction extends Segment {
 	}
 	
 	@Override
-	public boolean estDirigeVers(Segment segment) {
+	public boolean estDirigeVers(Segment segment) throws SegmentException {
 		return !segment.estDirigeVers(this);
 	}
 
@@ -78,7 +74,9 @@ public abstract class Jonction extends Segment {
 	}
 	
 	@Override
-	public void setSegmentArrivee(Segment segment) {
+	public void setSegmentArrivee(Segment segment) throws SegmentException {
+		if (segment == null)
+			throw new SegmentException("On tente de mettre un segment null en bout de Jonction");
 		for(int i=0; i<lignes.length; ++i)
 			if (segment == lignes[i])
 				numArrivee = i;
@@ -93,6 +91,20 @@ public abstract class Jonction extends Segment {
 	public boolean containsSemaphore() {
 		return false;
 	}
-	
+
+	@Override
+	public void activerCapteurs(Voiture voiture, int pos1, int pos2) {
+		// Rien a faire ici car une voiture ne peut pas se deplacer a l'interieur d'un segment
+		
+	}
+
+	@Override
+	public void activerCapteurs(Voiture voiture) {
+		if (posCapteurs == null)
+			return;
+		for (int i = 0; i < posCapteurs.size(); ++i) {
+			capteurs.get(i).detecter(voiture);
+		}
+	}
 
 }

@@ -1,4 +1,5 @@
 package jonction;
+import exception.VoitureException;
 import route.Ligne;
 import route.Segment;
 import voiture.Voiture;
@@ -16,8 +17,11 @@ public class Barriere extends Jonction {
 	}
 
 	@Override
-	public Segment sortiePour(Voiture occupant) {
-		return lignes[0]; // segments est toujours de longueur 1 pour une barriere
+	public Segment sortiePour(Voiture occupant) throws  VoitureException {
+		if (occupant == null)
+			throw new VoitureException("Voiture non definie dans SortiePour");
+		else
+			return lignes[0]; // segments est toujours de longueur 1 pour une barriere
 	}
 
 	
@@ -25,4 +29,5 @@ public class Barriere extends Jonction {
 	public String toString() {
 		return nom + "(Barriere)";
 	}
+
 }

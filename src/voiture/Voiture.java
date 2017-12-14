@@ -1,5 +1,7 @@
 package voiture;
 
+import exception.SegmentException;
+import exception.VoitureException;
 import route.Ligne;
 import route.Segment;
 import semaphore.Limitation;
@@ -20,17 +22,16 @@ public class Voiture {
 	private Segment segPrec;
 	private boolean peutSortir = true;
 
-	public Voiture(int position, int vitesseAct, int vitesseMax, boolean sens, Segment segAct) {
+	public Voiture(int position, int vitesseMax, boolean sens, Segment segAct) {
 		id = prochainID++;
 		this.position = position;
-		this.vitesseAct = vitesseAct;
 		this.vitesseMax = vitesseMax;
 		this.segAct = segAct;
 	}
 
-	public void avancer() {
-
-		distRestante = vitesseAct;
+	public void avancer() throws SegmentException {
+		
+		distRestante = vitesseAct = vitesseAutorisee = vitesseMax;
 		do {
 			if (segAct.containsSemaphore()) {
 				if (sens && ((Ligne)segAct).getSfin() != null)
@@ -39,18 +40,18 @@ public class Voiture {
 					reactSignal(((Ligne)segAct).getSdebut());
 			}
 			if (position + vitesseAct < segAct.getLong()) {
-				position += distRestante;
+				setPosition(position + distRestante);
 				distRestante = 0;
 			} else {
 				if (peutSortir) {
 					distRestante -= segAct.getLong() - position;
-					segPrec = segAct;
-					segAct = segAct.sortiePour(this);
-					sens = segPrec.estDirigeVers(segAct);
-					position = 0;
-					segAct.setSegmentArrivee(segPrec);
+					try {
+						setSegment(segAct.sortiePour(this));
+					} catch (VoitureException e) {
+						// Impossible qu'il y ait une exception puisque this ne peut pas etre null
+					}
 				} else {
-					position = segAct.getLong()-1;
+					setPosition(segAct.getLong() - 1);
 					distRestante = 0;
 				}
 			}
@@ -58,8 +59,25 @@ public class Voiture {
 		} while (distRestante > 0);
 
 	}
+	
+	public void setPosition(int nouvellePos) {
+		int posPrec = position;
+		position = nouvellePos;
+		segAct.activerCapteurs(this, posPrec,  position);
+	}
+
+	public void setSegment(Segment nouveauSeg) throws SegmentException {
+		segAct.activerCapteurs(this, position,  segAct.getLong()-1);
+		position = 0;
+		segPrec = segAct;
+		segAct = nouveauSeg;
+		sens = segPrec.estDirigeVers(segAct);
+		segAct.setSegmentArrivee(segPrec);
+		segAct.activerCapteurs(this);
+	}
 
 	public void reactSignal(Semaphore s) {
+		vitesseAct = vitesseAutorisee = vitesseMax;
 		if (this.sens == s.isSens() && s.getItsRoad() == this.segAct) {
 			Action info = s.GiveInfo();
 			switch (info) {
@@ -75,9 +93,7 @@ public class Voiture {
 				break;
 			case MaxSpeed:
 				if (vitesseMax > ((Limitation) s).getVitesseMax())
-					vitesseAutorisee = ((Limitation) s).getVitesseMax();
-				else
-					vitesseAutorisee = vitesseMax;
+					vitesseAct = vitesseAutorisee = ((Limitation) s).getVitesseMax();
 				break;
 			}
 		}
