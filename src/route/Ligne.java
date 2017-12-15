@@ -95,6 +95,7 @@ public class Ligne extends Segment {
 
 	public void addSemaphore(Semaphore semaphore) throws SegmentException{
 		for (Semaphore semAct : semaphores) {
+			System.out.println(semAct.getSens() + "   " +  semaphore.getSens() + "   " +  semAct.getType() + "   " +  semaphore.getType());
 			if (semAct.getSens() == semaphore.getSens() && semAct.getType() == semaphore.getType()) {
 				System.out.println("Il y a deja un semaphore de ce type ici");
 				throw new SegmentException("Il y a deja un semaphore de ce type ici");

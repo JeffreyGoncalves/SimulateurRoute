@@ -10,7 +10,7 @@ public abstract class Semaphore {
 	protected boolean sens;
 	protected T_Semaphore sonType;
 
-	public Semaphore(Ligne toBeAdded, boolean sens) throws SegmentException{
+	public Semaphore(Ligne toBeAdded, boolean sens, T_Semaphore sonType) throws SegmentException{
 		if (toBeAdded != null) {
 			itsRoad = toBeAdded;
 			this.sens = sens;
@@ -24,7 +24,7 @@ public abstract class Semaphore {
 
 	public abstract Action GiveInfo();
 
-	public abstract void switchCurrent(int currentTurn);
+	public abstract void changementAuto(int currentTurn);
 
 	public boolean getSens() {
 		return sens;

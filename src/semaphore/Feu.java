@@ -18,11 +18,11 @@ public class Feu extends Semaphore {
 	protected ElementRegulation chef = null;
 
 	public Feu(Ligne toBeAdded, boolean sens, int periode, int tVert, int tRouge) throws SemaphoreException, SegmentException {
-		super(toBeAdded, sens);
+		super(toBeAdded, sens, T_Semaphore.t_feu);
 		sonType = T_Semaphore.t_feu;
 		this.current = CouleurFeu.Rouge;
 		if(periode < 0 || tVert < 0 || tRouge < 0) {
-			throw new SemaphoreException("Duree(s) negative(s) !! \n");
+			throw new SemaphoreException("Duree(s) negative(s) ! \n");
 		}
 		else {
 			this.periode = periode;
@@ -30,6 +30,10 @@ public class Feu extends Semaphore {
 			this.tRouge = tRouge;
 		}
 		
+	}
+	
+	public Feu(Ligne toBeAdded, boolean sens) throws SegmentException {
+		super(toBeAdded, sens, T_Semaphore.t_feu);
 	}
 
 	@Override
@@ -42,7 +46,7 @@ public class Feu extends Semaphore {
 	}
 
 	@Override
-	public void switchCurrent(int currentTurn){
+	public void changementAuto(int currentTurn){
 		int t = currentTurn % periode;
 		if (t == tVert)
 			current = CouleurFeu.Vert;
@@ -59,8 +63,8 @@ public class Feu extends Semaphore {
 		int turn = 0;
 		while (turn < 20) {
 
-			sabrule.switchCurrent(turn);
-			sabrule2.switchCurrent(turn);
+			sabrule.changementAuto(turn);
+			sabrule2.changementAuto(turn);
 			System.out.println(sabrule);
 			System.out.println(sabrule2);
 			System.out.println();

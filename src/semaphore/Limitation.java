@@ -9,8 +9,7 @@ public class Limitation extends Semaphore {
 	private int vitesseMax;
 
 	public Limitation(Ligne toBeAdded, boolean sens, int vmax) throws SegmentException {
-		super(toBeAdded, sens);
-		sonType = T_Semaphore.t_limite;
+		super(toBeAdded, sens, T_Semaphore.t_feu);
 		vitesseMax = vmax;
 	}
 
@@ -24,7 +23,7 @@ public class Limitation extends Semaphore {
 	}
 
 	@Override
-	public void switchCurrent(int currentTurn) {
+	public void changementAuto(int currentTurn) {
 
 	}
 }

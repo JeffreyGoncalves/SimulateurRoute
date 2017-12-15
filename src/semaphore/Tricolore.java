@@ -16,14 +16,21 @@ public class Tricolore extends Feu {
 
 		super(toBeAdded, sens, periode, tVert, tRouge);
 		this.tOrange = tOrange;
+		sonType = T_Semaphore.t_feu;
 	}
 
+	
+	public Tricolore(Ligne toBeAdded, boolean sens) throws SegmentException {
+		super(toBeAdded, sens);
+		sonType = T_Semaphore.t_feu;
+	}
+	
 	public CouleurFeu getCurrent() {
 		return this.current;
 	}
 
 	@Override
-	public void switchCurrent(int currentTurn) {
+	public void changementAuto(int currentTurn) {
 		int t = currentTurn % periode;
 		//System.out.println("t = " + t);
 		if (t == tVert)
@@ -56,7 +63,7 @@ public class Tricolore extends Feu {
 
 		while (i < 20) {
 
-			sabrule.switchCurrent(i);
+			sabrule.changementAuto(i);
 			System.out.println(sabrule.toString());
 			i++;
 		}

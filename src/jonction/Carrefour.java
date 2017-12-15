@@ -18,4 +18,8 @@ public class Carrefour extends Jonction {
 		return nom + "(Carrefour)";
 	}
 	
+	public Ligne[] getBranches() {
+		return branches;
+	}
+	
 }

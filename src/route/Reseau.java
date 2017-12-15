@@ -2,15 +2,16 @@ package route;
 import java.util.ArrayList;
 
 import capteur.Capteur;
+import exception.JonctionException;
 import exception.SegmentException;
 import exception.SemaphoreException;
-import exception.JonctionException;
 import jonction.Barriere;
 import jonction.Carrefour;
 import jonction.Jonction;
+import regulation.DonneurDePriorite;
+import regulation.ElementRegulation;
 import semaphore.Feu;
 import semaphore.Limitation;
-import semaphore.Semaphore;
 import semaphore.Tricolore;
 import voiture.Voiture;
 
@@ -47,6 +48,10 @@ public class Reseau {
 	public void ajouterVoiture(Voiture voiture) {
 		usagers.add(voiture);
 	}
+	
+	public void addCapteur(Capteur capteur) {
+		capteurs.add(capteur);
+	}
 
 	public void faireAvancer() throws SegmentException {
 		for (Voiture usager : usagers) {
@@ -63,7 +68,7 @@ public class Reseau {
 
 	public void runFeux(int currentTurn) {
 		for (Feu feu : feuxIndependants) {
-			feu.switchCurrent(currentTurn);
+			feu.changementAuto(currentTurn);
 			System.out.println(feu);
 		}
 	}
@@ -94,7 +99,8 @@ public class Reseau {
 		
 		reseau.finirConstruction(); // finit la construction des routes
 		
-		
+		ElementRegulation.setReseau(reseau);
+		DonneurDePriorite regulateur = new DonneurDePriorite((Carrefour) lieu2, (Ligne) reseau.routes.get(3));
 
 		int nbTours = 0;
 		while (nbTours < 60) {
