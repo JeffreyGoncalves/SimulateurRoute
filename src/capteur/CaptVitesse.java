@@ -8,5 +8,6 @@ public class CaptVitesse extends Capteur {
 
 	public CaptVitesse(Segment segment, int position, int vDetect) {
 		super(segment, position);
+		this.vDetect = vDetect;
 	}
 }
