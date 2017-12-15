@@ -8,7 +8,9 @@ import exception.JonctionException;
 import jonction.Barriere;
 import jonction.Carrefour;
 import jonction.Jonction;
+import semaphore.Feu;
 import semaphore.Limitation;
+import semaphore.Semaphore;
 import semaphore.Tricolore;
 import voiture.Voiture;
 
@@ -16,6 +18,8 @@ public class Reseau {
 
 	private ArrayList<Segment> routes = new ArrayList<Segment>();
 	private ArrayList<Voiture> usagers = new ArrayList<Voiture>();
+	private ArrayList<Feu> feuxIndependants = new ArrayList<Feu>();
+	private ArrayList<Capteur> capteurs = new ArrayList<Capteur>();
 
 	private boolean constructionFinie = false;
 
@@ -46,23 +50,21 @@ public class Reseau {
 
 	public void faireAvancer() throws SegmentException {
 		for (Voiture usager : usagers) {
-			System.out.println(usager.toString());
+			System.out.println(usager.descrLongue());
 			usager.avancer();
 		}
 	}
+	
+	public void transmettreInfosCapteurs() {
+		for (Capteur capteur : capteurs) {
+			capteur.transmettreInfo();
+		}
+	}
 
-	public void RunSemaphores(int currentTurn) {
-		for (Segment s : routes) {
-			if (s.containsSemaphore()) {
-				if (((Ligne) s).getSdebut() != null) {
-					((Ligne) s).getSdebut().switchCurrent(currentTurn);
-					//System.out.println(((Ligne) s).getSdebut());
-				} else {
-					((Ligne) s).getSfin().switchCurrent(currentTurn);
-					//System.out.println(((Ligne) s).getSfin());
-				}
-			}
-
+	public void runFeux(int currentTurn) {
+		for (Feu feu : feuxIndependants) {
+			feu.switchCurrent(currentTurn);
+			System.out.println(feu);
 		}
 	}
 	
@@ -70,30 +72,36 @@ public class Reseau {
 	public static void main(String[] args) throws SegmentException, JonctionException, SemaphoreException {
 
 		Reseau reseau = Segment.getReseau();
-
+		
+		
+		// Exemple 1
 		Jonction lieu1 = new Barriere("PUIO");
-		Jonction lieu2 = new Carrefour("MDI");
+		Jonction lieu2 = new Carrefour("MDI", 3);
 		Jonction lieu3 = new Barriere("EDC");
-
 		reseau.relier(lieu1, lieu2, 10);
 		reseau.relier(lieu2, lieu3, 5);
-
 		
 		Voiture voit1 = new Voiture(0, 2, true, lieu1);
 		reseau.ajouterVoiture(voit1);
+		Voiture voit2 = new Voiture(0, 2, true, lieu3);
+		reseau.ajouterVoiture(voit2);
 		
-		Tricolore sabrule = new Tricolore((Ligne)reseau.routes.get(3), true, 20, 0, 4, 5);
-		Limitation limite = new Limitation((Ligne)reseau.routes.get(4), 1, true);
-		Capteur capteur = new Capteur(reseau.routes.get(3), 4);
-
-		reseau.finirConstruction();
+		Tricolore feu = new Tricolore((Ligne)reseau.routes.get(3), true, 10, 0, 3, 4);
+		reseau.feuxIndependants.add(feu);
+		Limitation limite = new Limitation((Ligne)reseau.routes.get(3), true, 1);
+		Capteur capteur1 = new Capteur(reseau.routes.get(3), 4);
+		reseau.capteurs.add(capteur1);
+		
+		reseau.finirConstruction(); // finit la construction des routes
+		
+		
 
 		int nbTours = 0;
 		while (nbTours < 60) {
-			System.out.println("- Nouveau tour -");
-			System.out.println(sabrule);
-			reseau.RunSemaphores(nbTours);
+			System.out.println("\n- Nouveau tour -");
 			reseau.faireAvancer();
+			reseau.transmettreInfosCapteurs();
+			reseau.runFeux(nbTours);
 			++nbTours;
 		}
 

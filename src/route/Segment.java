@@ -6,13 +6,13 @@ import capteur.Capteur;
 import exception.JonctionException;
 import exception.SegmentException;
 import exception.VoitureException;
+import semaphore.Semaphore;
 import voiture.Voiture;
 
 public abstract class Segment {
 	
 	protected static Reseau reseau = new Reseau();
 	protected ArrayList<Capteur> capteurs;
-	protected ArrayList<Integer> posCapteurs;
 	
 	public Segment() {
 		reseau.ajouterSegment(this);
@@ -22,13 +22,11 @@ public abstract class Segment {
 		return reseau;
 	}
 	
-	public void addCapteur(Capteur capteur, int pos) {
+	public void addCapteur(Capteur capteur) {
 		if (capteurs == null) {
 			capteurs = new ArrayList<Capteur>();
-			posCapteurs = new ArrayList<Integer>();
 		}
 		capteurs.add(capteur);
-		posCapteurs.add(pos);
 	}
 	
 	public boolean containsCapt() {
@@ -50,8 +48,12 @@ public abstract class Segment {
 
 	public abstract int getLong();
 	
+	public abstract void finirConstruction() throws SegmentException, JonctionException;
+	
+	public abstract String descrLongue();
+
 	public abstract boolean containsSemaphore();
 	
-	public abstract void finirConstruction() throws SegmentException, JonctionException;
+	public abstract ArrayList<Semaphore> getSemaphores();
 	
 }

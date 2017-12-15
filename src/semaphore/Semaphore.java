@@ -1,5 +1,6 @@
 package semaphore;
 
+import exception.SegmentException;
 import route.Ligne;
 import status.Action;
 
@@ -7,11 +8,13 @@ public abstract class Semaphore {
 
 	protected Ligne itsRoad;
 	protected boolean sens;
+	protected T_Semaphore sonType;
 
-	public Semaphore(Ligne toBeAdded, boolean b) {
+	public Semaphore(Ligne toBeAdded, boolean sens) throws SegmentException{
 		if (toBeAdded != null) {
 			itsRoad = toBeAdded;
-			toBeAdded.addSemaphore(this, b);
+			this.sens = sens;
+			toBeAdded.addSemaphore(this);
 		}
 	}
 
@@ -23,10 +26,14 @@ public abstract class Semaphore {
 
 	public abstract void switchCurrent(int currentTurn);
 
-	public boolean isSens() {
+	public boolean getSens() {
 		return sens;
 	}
-
+	
+	public T_Semaphore getType() {
+		return sonType;
+	}
+	
 	public void setSens(boolean b) {
 		this.sens = b;
 	}

@@ -1,5 +1,7 @@
 package voiture;
 
+import java.util.ArrayList;
+
 import exception.SegmentException;
 import exception.VoitureException;
 import route.Ligne;
@@ -15,7 +17,8 @@ public class Voiture {
 	private int position;
 	private int vitesseAct;
 	private int vitesseMax; // vitesse physiquement atteignable par la voiture
-	private int vitesseAutorisee; // vitesse maximale selon les panneaux de limitation de vitesse
+	private int vitesseAutorisee; // vitesse maximale selon les panneaux de
+									// limitation de vitesse
 	private int distRestante;
 	private boolean sens;
 	private Segment segAct;
@@ -27,21 +30,17 @@ public class Voiture {
 		this.position = position;
 		this.vitesseMax = vitesseMax;
 		this.segAct = segAct;
-			this.vitesseAct = vitesseAct;
-			this.vitesseMax = vitesseMax;
-			this.segAct = segAct;
-		
+		this.vitesseMax = vitesseMax;
+		this.segAct = segAct;
+
 	}
 
 	public void avancer() throws SegmentException {
-		
+
 		distRestante = vitesseAct = vitesseAutorisee = vitesseMax;
 		do {
 			if (segAct.containsSemaphore()) {
-				if (sens && ((Ligne) segAct).getSfin() != null)
-					reactSignal(((Ligne) segAct).getSfin());
-				else if (!sens && ((Ligne) segAct).getSdebut() != null)
-					reactSignal(((Ligne) segAct).getSdebut());
+				reactSignals(segAct.getSemaphores());
 			}
 			if (position + vitesseAct < segAct.getLong()) {
 				setPosition(position + distRestante);
@@ -49,11 +48,11 @@ public class Voiture {
 			} else {
 				if (peutSortir) {
 					distRestante -= segAct.getLong() - position;
-						try {
-							setSegment(segAct.sortiePour(this));
-						} catch (VoitureException e) {
-							e.printStackTrace();
-						}
+					try {
+						setSegment(segAct.sortiePour(this));
+					} catch (VoitureException e) {
+						e.printStackTrace();
+					}
 				} else {
 					setPosition(segAct.getLong() - 1);
 					distRestante = 0;
@@ -63,15 +62,15 @@ public class Voiture {
 		} while (distRestante > 0);
 
 	}
-	
+
 	public void setPosition(int nouvellePos) {
 		int posPrec = position;
 		position = nouvellePos;
-		segAct.activerCapteurs(this, posPrec,  position);
+		segAct.activerCapteurs(this, posPrec + 1, position);
 	}
 
 	public void setSegment(Segment nouveauSeg) throws SegmentException {
-		segAct.activerCapteurs(this, position,  segAct.getLong()-1);
+		setPosition(segAct.getLong() - 1);
 		position = 0;
 		segPrec = segAct;
 		segAct = nouveauSeg;
@@ -80,29 +79,39 @@ public class Voiture {
 		segAct.activerCapteurs(this);
 	}
 
-	public void reactSignal(Semaphore s) {
+	public void reactSignals(ArrayList<Semaphore> semaphores) {
 		vitesseAct = vitesseAutorisee = vitesseMax;
-		if (this.sens == s.isSens() && s.getItsRoad() == this.segAct) {
-			Action info = s.GiveInfo();
-			switch (info) {
-			case Stop:
-				peutSortir = false;
-				break;
-			case LetItGo:
-				peutSortir = true;
-				break;
-			case SlowDown:
-				peutSortir = true;
-				vitesseAct = vitesseAutorisee / 2;
-				break;
-			case MaxSpeed:
-				if (vitesseMax > ((Limitation) s).getVitesseMax())
-					vitesseAct = vitesseAutorisee = ((Limitation) s).getVitesseMax();
-				break;
+		boolean doitRalentir = false;
+		System.out.println("Il y a " + semaphores.size() + " semaphore(s) ici");
+		
+		for (Semaphore s : semaphores) {
+			if (this.sens == s.getSens()) {
+				Action info = s.GiveInfo();
+				System.out.println(this + " recoit " + info);
+				switch (info) {
+				case Stop:
+					doitRalentir = true;
+					peutSortir = false;
+					break;
+				case LetItGo:
+					peutSortir = true;
+					break;
+				case SlowDown:
+					doitRalentir = true;
+					peutSortir = true;
+					break;
+				case MaxSpeed:
+					if (vitesseMax > ((Limitation) s).getVitesseMax())
+						vitesseAct = vitesseAutorisee = ((Limitation) s).getVitesseMax();
+					break;
+				}
 			}
-			if (vitesseAct < distRestante)
-				distRestante = vitesseAct;
 		}
+
+		if (doitRalentir)
+			vitesseAct = vitesseAutorisee / 2;
+		if (vitesseAct < distRestante)
+			distRestante = vitesseAct;
 	}
 
 	public boolean getSens() {
@@ -119,8 +128,12 @@ public class Voiture {
 
 	@Override
 	public String toString() {
-		return "voiture " + id + " : " + (sens ? "aller " : "retour ") + position + "/" + segAct.getLong() + " sur "
-				+ segAct;
+		return "voiture_" + id;
+	}
+
+	// Offre une description plus detaillee de la Voiture
+	public String descrLongue() {
+		return this + " : " + (sens ? "aller " : "retour ") + position + "/" + segAct.getLong() + " sur " + segAct;
 	}
 
 }

@@ -1,5 +1,6 @@
 package semaphore;
 
+import exception.SegmentException;
 import route.Ligne;
 import status.Action;
 
@@ -7,8 +8,9 @@ public class Limitation extends Semaphore {
 
 	private int vitesseMax;
 
-	public Limitation(Ligne toBeAdded, int vmax, boolean b) {
-		super(toBeAdded, b);
+	public Limitation(Ligne toBeAdded, boolean sens, int vmax) throws SegmentException {
+		super(toBeAdded, sens);
+		sonType = T_Semaphore.t_limite;
 		vitesseMax = vmax;
 	}
 
@@ -18,7 +20,7 @@ public class Limitation extends Semaphore {
 
 	@Override
 	public Action GiveInfo() {
-		return Action.LetItGo;
+		return Action.MaxSpeed;
 	}
 
 	@Override

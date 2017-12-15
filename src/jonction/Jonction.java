@@ -1,5 +1,6 @@
 package jonction;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import exception.JonctionException;
@@ -7,13 +8,14 @@ import exception.SegmentException;
 import exception.VoitureException;
 import route.Ligne;
 import route.Segment;
+import semaphore.Semaphore;
 import voiture.Voiture;
 
 public abstract class Jonction extends Segment {
 
 	protected Voiture occupant;
 	protected int numArrivee;
-	protected Ligne lignes[];
+	protected Ligne branches[];
 	protected String nom;
 	Random rand = new Random();
 
@@ -35,10 +37,10 @@ public abstract class Jonction extends Segment {
 			throw new SegmentException("Cette ligne n'existe pas dans ajouterLigne !! \n");
 		} else {
 			int i = 0;
-			while (i < lignes.length && lignes[i] != null)
+			while (i < branches.length && branches[i] != null)
 				++i;
-			if (i < lignes.length)
-				lignes[i] = ligne;
+			if (i < branches.length)
+				branches[i] = ligne;
 			else
 				System.out.println("On ne peut peut plus ajouter de ligne a " + this);
 		}
@@ -49,7 +51,7 @@ public abstract class Jonction extends Segment {
 	public void finirConstruction() throws SegmentException, JonctionException {
 		// On cree des routes pour qu'il n'y ait pas de jonctions avec des sorties
 		// nulles.
-		for (Ligne ln : lignes)
+		for (Ligne ln : branches)
 			if (ln == null) {
 				Barriere qqpart = new Barriere();
 				ln = new Ligne(this, qqpart, 2);
@@ -65,12 +67,14 @@ public abstract class Jonction extends Segment {
 	public Segment sortiePour(Voiture occupant) throws VoitureException {
 
 			if (occupant.getSegPrec() == null)
-				return lignes[rand.nextInt(lignes.length)];
+				return branches[rand.nextInt(branches.length)];
 
-			int temp = rand.nextInt(lignes.length - 1);
+			int temp = rand.nextInt(branches.length - 1);
+			/*for (int i=0; i<lignes.length; ++i)
+				System.out.println(lignes[i] + (i==numArrivee ? " (interdite)" : ""));*/
 			if (temp >= numArrivee)
 				++temp;
-			return lignes[temp];
+			return branches[temp];
 		}
 
 	@Override
@@ -90,12 +94,12 @@ public abstract class Jonction extends Segment {
 
 		if (segment == null)
 			throw new SegmentException("On tente de mettre un segment null en bout de Jonction");
-		for(int i=0; i<lignes.length; ++i)
-			if (segment == lignes[i])
+		for(int i=0; i<branches.length; ++i)
+			if (segment == branches[i])
 				numArrivee = i;
 
 	}
-
+	
 	@Override
 	public String toString() {
 		return nom;
@@ -104,6 +108,11 @@ public abstract class Jonction extends Segment {
 	@Override
 	public boolean containsSemaphore() {
 		return false;
+	}
+	
+	@Override
+	public ArrayList<Semaphore> getSemaphores() {
+		return new ArrayList<Semaphore>();
 	}
 
 
@@ -115,9 +124,9 @@ public abstract class Jonction extends Segment {
 
 	@Override
 	public void activerCapteurs(Voiture voiture) {
-		if (posCapteurs == null)
+		if (capteurs == null)
 			return;
-		for (int i = 0; i < posCapteurs.size(); ++i) {
+		for (int i = 0; i < capteurs.size(); ++i) {
 			capteurs.get(i).detecter(voiture);
 		}
 	}

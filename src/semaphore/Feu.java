@@ -17,8 +17,9 @@ public class Feu extends Semaphore {
 	protected int periode;
 	protected ElementRegulation chef = null;
 
-	public Feu(Ligne toBeAdded, boolean b, int periode, int tVert, int tRouge) throws SemaphoreException {
-		super(toBeAdded, b);
+	public Feu(Ligne toBeAdded, boolean sens, int periode, int tVert, int tRouge) throws SemaphoreException, SegmentException {
+		super(toBeAdded, sens);
+		sonType = T_Semaphore.t_feu;
 		this.current = CouleurFeu.Rouge;
 		if(periode < 0 || tVert < 0 || tRouge < 0) {
 			throw new SemaphoreException("Duree(s) negative(s) !! \n");

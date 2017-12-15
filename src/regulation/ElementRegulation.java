@@ -1,19 +1,20 @@
 package regulation;
-import java.util.ArrayList;
-
-import capteur.Capteur;
 import jonction.Carrefour;
-import semaphore.Feu;
-import status.CouleurFeu;
+import route.Reseau;
 
 public abstract class ElementRegulation {
-	protected Carrefour carrefour;
 	
+	protected Carrefour carrefour;
+	protected static Reseau sonReseau;
 	
 	public ElementRegulation(Carrefour carrefour) {
 		this.carrefour = carrefour;
 	}
 	
-	public abstract void traiterInfo();
+	public abstract void donnerOrdres();
+	
+	public static void setReseau(Reseau reseau) {
+		sonReseau = reseau;
+	}
 	
 }

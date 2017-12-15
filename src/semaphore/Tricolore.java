@@ -12,9 +12,9 @@ public class Tricolore extends Feu {
 	private int tOrange;
 
 
-	public Tricolore(Ligne toBeAdded, boolean b, int periode, int tVert, int tOrange, int tRouge) throws SemaphoreException {
+	public Tricolore(Ligne toBeAdded, boolean sens, int periode, int tVert, int tOrange, int tRouge) throws SemaphoreException, SegmentException {
 
-		super(toBeAdded, b, periode, tVert, tRouge);
+		super(toBeAdded, sens, periode, tVert, tRouge);
 		this.tOrange = tOrange;
 	}
 

@@ -1,29 +1,30 @@
 package route;
 
+import java.util.ArrayList;
 
 import exception.JonctionException;
 import exception.SegmentException;
 import exception.VoitureException;
 import jonction.Jonction;
+import semaphore.Feu;
+import semaphore.Limitation;
 import semaphore.Semaphore;
+import semaphore.T_Semaphore;
 import voiture.Voiture;
 
 public class Ligne extends Segment {
 	private int longueur;
 	private Jonction debut;
 	private Jonction fin;
-	private Semaphore sFin;
-	private Semaphore sDebut;
+	private ArrayList<Semaphore> semaphores = new ArrayList<Semaphore>();
 
-	public Ligne( Jonction debut, Jonction fin, int longueur) throws SegmentException {
+	public Ligne(Jonction debut, Jonction fin, int longueur) throws SegmentException {
 		super();
 		this.longueur = longueur;
 		this.debut = debut;
 		this.fin = fin;
 		debut.ajouterLigne(this);
 		fin.ajouterLigne(this);
-		this.sFin = null;
-		this.sDebut = null;
 	}
 
 	public Jonction getDebut() {
@@ -79,7 +80,12 @@ public class Ligne extends Segment {
 
 	@Override
 	public String toString() {
-		return "Route_de_" + debut + "_vers_" + fin;
+		return "ligne(" + debut + "->" + fin + ")";
+	}
+	
+	@Override
+	public String descrLongue() {
+		return "Route_de_" + debut.descrLongue() + "_vers_" + fin.descrLongue();
 	}
 
 	@Override
@@ -87,60 +93,48 @@ public class Ligne extends Segment {
 		// Rien a faire pour une Ligne
 	}
 
-	// NEW fonction pour add un semaphore
-	public void addSemaphore(Semaphore s, boolean b) {
-		if (b) {
-			setSfin(s);
-		} else {
-			setSdebut(s);
+	public void addSemaphore(Semaphore semaphore) throws SegmentException{
+		for (Semaphore semAct : semaphores) {
+			if (semAct.getSens() == semaphore.getSens() && semAct.getType() == semaphore.getType()) {
+				System.out.println("Il y a deja un semaphore de ce type ici");
+				throw new SegmentException("Il y a deja un semaphore de ce type ici");
+			}
 		}
-	}
-
-	public Semaphore getSfin() {
-		return sFin;
-	}
-
-	public void setSfin(Semaphore sfin) {
-		this.sFin = sfin;
-		this.sFin.setSens(true);
-	}
-
-	public Semaphore getSdebut() {
-		return sDebut;
-	}
-
-	public void setSdebut(Semaphore sdebut) {
-		this.sDebut = sdebut;
-		this.sDebut.setSens(false);
+		semaphores.add(semaphore);
 	}
 
 	@Override
 	public void activerCapteurs(Voiture voiture, int pos1, int pos2) {
-		if (posCapteurs == null)
+		if (capteurs == null)
 			return;
-		int pos1Retour = longueur - 1 - pos1;
-		int pos2Retour = longueur - 1 - pos2;
-		for (int i = 0; i < posCapteurs.size(); ++i) {
-			if ((voiture.getSens() && posCapteurs.get(i) >= pos1 && posCapteurs.get(i) <= pos2)
-					|| (!voiture.getSens() && posCapteurs.get(i) >= pos2Retour && posCapteurs.get(i) <= pos1Retour))
+		int posAbs1 = voiture.getSens() ? pos1 : (longueur - 1 - pos2);
+		int posAbs2 = voiture.getSens() ? pos2 : (longueur - 1 - pos1);
+		//System.out.println(posAbs1 + "  ;  " + posAbs2);
+		for (int i = 0; i < capteurs.size(); ++i) {
+			if (capteurs.get(i).getPos() >= posAbs1 && capteurs.get(i).getPos() <= posAbs2)
 				capteurs.get(i).detecter(voiture);
 		}
 	}
 
 	@Override
 	public void activerCapteurs(Voiture voiture) {
-		if (posCapteurs == null)
+		if (capteurs == null)
 			return;
-		for (int i = 0; i < posCapteurs.size(); ++i) {
-			if ((voiture.getSens() && posCapteurs.get(i) == 0)
-					|| (!voiture.getSens() && posCapteurs.get(i) == longueur - 1))
+		for (int i = 0; i < capteurs.size(); ++i) {
+			if ((voiture.getSens() && capteurs.get(i).getPos() == 0)
+					|| (!voiture.getSens() && capteurs.get(i).getPos() == longueur - 1))
 				capteurs.get(i).detecter(voiture);
 		}
 	}
 
 	@Override
 	public boolean containsSemaphore() {
-		return (sDebut != null || sFin != null);
+		return (semaphores.size() > 0);
+	}
+	
+	@Override
+	public ArrayList<Semaphore> getSemaphores() {
+		return semaphores;
 	}
 
 }
